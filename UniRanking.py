@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 # Load your CSV data
-df = pd.read_csv("C:/Users/Leen/OneDrive/Documents/World University Rankings 2023 1.csv")
+url = "https://raw.githubusercontent.com/LeenAlSayed01/Asst2_Leen/main/World%20University%20Rankings%202023%201.csv"
+df = pd.read_csv("url)
 
 # Create a Streamlit app
 st.title("World University Rankings 2023")
