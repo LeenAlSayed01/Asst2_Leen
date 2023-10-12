@@ -29,9 +29,6 @@ students_range = st.sidebar.slider("Number of Students", min_students, max_stude
 min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
 score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
 
-# Select a University
-select_university = st.sidebar.selectbox("Select a university:", ['All'] + sorted(df["Name of University"].unique().tolist()))
-
 # Filter the DataFrame based on user selections
 filtered_df = df[
     (df["No of student"] >= students_range[0]) &
@@ -39,8 +36,6 @@ filtered_df = df[
     (df["OverAll Score"] >= score_range[0]) &
     (df["OverAll Score"] <= score_range[1])
 ]
-if select_university != 'All':
-    filtered_df = filtered_df[filtered_df["Name of University"] == select_university]
 
 # Introductory page content
 st.title("World University Rankings 2023")
@@ -64,9 +59,11 @@ if st.checkbox("Click to see the webpage content"):
     st.plotly_chart(fig2)
 
     # Figure 3
+    select_university = st.selectbox("Select a university:", ['All'] + filtered_df["Name of University"].unique().tolist())
     if select_university != 'All':
+        university_df = filtered_df[filtered_df["Name of University"] == select_university]
         fig3 = px.choropleth(
-            filtered_df,
+            university_df,
             locations="Location",
             locationmode="country names",
             color="Name of University",
