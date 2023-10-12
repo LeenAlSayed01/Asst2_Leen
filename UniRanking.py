@@ -18,19 +18,6 @@ def handle_score(score):
 
 df["OverAll Score"] = df["OverAll Score"].apply(handle_score).fillna(0)
 
-# Define a placeholder for user input
-# Initialize session state to store user input
-if 'user_input' not in st.session_state:
-    st.session_state.user_input = ""
-
-# Create a text input field
-user_input = st.text_input("Enter your name:")
-
-# Create a button to fetch user input and update the page title
-if st.button("Submit"):
-    st.session_state.user_input = user_input  # Store user input in session state
-    st.title("Hello " + st.session_state.user_input + ", welcome to World University Rankings 2023")
-
 # Sidebar filters
 st.sidebar.title("Filters")
 
@@ -44,6 +31,19 @@ students_range = st.sidebar.slider("Number of Students", min_students, max_stude
 # Filter by Overall Score
 min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
 score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
+
+# Define a placeholder for user input
+# Initialize session state to store user input
+if 'user_input' not in st.session_state:
+    st.session_state.user_input = ""
+
+# Create a text input field
+user_input = st.text_input("Enter your name:")
+
+# Create a button to fetch user input and update the page title
+if st.button("Submit"):
+    st.session_state.user_input = user_input  # Store user input in session state
+    st.title("Hello " + st.session_state.user_input + ", welcome to World University Rankings 2023")
 
 # Filter the DataFrame based on user selections
 filtered_df = df[(df["Location"] == selected_location) &
