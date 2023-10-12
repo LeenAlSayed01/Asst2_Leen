@@ -26,52 +26,19 @@ min_students, max_students = df["No of student"].min(), df["No of student"].max(
 students_range = st.sidebar.slider("Number of Students", min_students, max_students, (min_students, max_students))
 
 # Filter by Overall Score
-min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
-score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
-
-# Filter by Teaching Score
-min_teaching, max_teaching = df["Teaching Score"].min(), df["Teaching Score"].max()
-teaching_range = st.sidebar.slider("Teaching Score", min_teaching, max_teaching, (min_teaching, max_teaching))
-
-# Filter by Research Score
-min_research, max_research = df["Research Score"].min(), df["Research Score"].max()
-research_range = st.sidebar.slider("Research Score", min_research, max_research, (min_research, max_research))
-
-# Filter by Citations Score
-min_citations, max_citations = df["Citations Score"].min(), df["Citations Score"].max()
-citations_range = st.sidebar.slider("Citations Score", min_citations, max_citations, (min_citations, max_citations))
-
-# Filter by Industry Income Score
-min_industry, max_industry = df["Industry Income Score"].min(), df["Industry Income Score"].max()
-industry_range = st.sidebar.slider("Industry Income Score", min_industry, max_industry, (min_industry, max_industry))
-
-# Filter by International Outlook Score
-min_international, max_international = df["International Outlook Score"].min(), df["International Outlook Score"].max()
-international_range = st.sidebar.slider("International Outlook Score", min_international, max_international, (min_international, max_international))
-
-# Select a University
-universities = ['All'] + list(df["Name of University"].dropna().unique())
-select_university = st.sidebar.selectbox("Select a university:", universities)
+score_columns = ["OverAll Score", "Teaching Score", "Research Score", "Citations Score", "Industry Income Score", "International Outlook Score"]
+score_ranges = {}
+for column in score_columns:
+    min_val, max_val = df[column].min(), df[column].max()
+    score_ranges[column] = st.sidebar.slider(column, min_val, max_val, (min_val, max_val))
 
 # Filter the DataFrame based on user selections
 filtered_df = df[
     (df["No of student"] >= students_range[0]) &
-    (df["No of student"] <= students_range[1]) &
-    (df["OverAll Score"] >= score_range[0]) &
-    (df["OverAll Score"] <= score_range[1]) &
-    (df["Teaching Score"] >= teaching_range[0]) &
-    (df["Teaching Score"] <= teaching_range[1]) &
-    (df["Research Score"] >= research_range[0]) &
-    (df["Research Score"] <= research_range[1]) &
-    (df["Citations Score"] >= citations_range[0]) &
-    (df["Citations Score"] <= citations_range[1]) &
-    (df["Industry Income Score"] >= industry_range[0]) &
-    (df["Industry Income Score"] <= industry_range[1]) &
-    (df["International Outlook Score"] >= international_range[0]) &
-    (df["International Outlook Score"] <= international_range[1])
+    (df["No of student"] <= students_range[1])
 ]
-if select_university != 'All':
-    filtered_df = filtered_df[filtered_df["Name of University"] == select_university]
+for column, (min_val, max_val) in score_ranges.items():
+    filtered_df = filtered_df[(df[column] >= min_val) & (df[column] <= max_val)]
 
 # Introductory page content
 st.title("World University Rankings 2023")
@@ -88,15 +55,18 @@ if st.checkbox("Click to see the webpage content"):
     fig_scatter = px.scatter(filtered_df, x="OverAll Score", y="International Student", 
                              hover_name="Name of University", title="Scatter Plot: Overall Score vs. International Student Percentage")
     st.plotly_chart(fig_scatter)  
+    
     # Figure 2
     fig2 = px.line(filtered_df, x="No of student", y="No of student per staff", color="Name of University",
                    title="Changes in University Rankings Over Time")
     st.plotly_chart(fig2)
 
     # Figure 3
+    select_university = st.selectbox("Select a university:", ['All'] + filtered_df["Name of University"].unique().tolist())
     if select_university != 'All':
+        university_df = filtered_df[filtered_df["Name of University"] == select_university]
         fig3 = px.choropleth(
-            filtered_df,
+            university_df,
             locations="Location",
             locationmode="country names",
             color="Name of University",
