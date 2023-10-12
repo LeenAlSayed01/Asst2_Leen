@@ -73,11 +73,13 @@ if st.checkbox("Click to see the webpage content"):
 
     # New Figure 4: Histogram of Overall Score
     st.subheader("Distribution of Universities based on Overall Score")
-    fig4 = px.histogram(filtered_df, x="OverAll Score", title="Distribution of Universities based on Overall Score", nbins=50)
+    bin_selection = st.select_slider('Select number of bins:', options=[10, 20, 30, 40, 50, 60, 70], value=50)
+    fig4 = px.histogram(filtered_df, x="OverAll Score", title="Distribution of Universities based on Overall Score", nbins=bin_selection)
     st.plotly_chart(fig4)
 
-    # New Figure 5: Bar chart of average Teaching Score per Location
-    st.subheader("Average Teaching Score per Location")
-    teaching_score_per_location = filtered_df.groupby('Location')['Teaching Score'].mean().reset_index()
-    fig5 = px.bar(teaching_score_per_location, x='Location', y='Teaching Score', title="Average Teaching Score per Location")
+    # New Figure 5: Bar chart of average Score per Location
+    score_selection = st.selectbox('Select a score type:', score_columns, index=1)
+    st.subheader(f"Average {score_selection} per Location")
+    score_per_location = filtered_df.groupby('Location')[score_selection].mean().reset_index()
+    fig5 = px.bar(score_per_location, x='Location', y=score_selection, title=f"Average {score_selection} per Location")
     st.plotly_chart(fig5)
