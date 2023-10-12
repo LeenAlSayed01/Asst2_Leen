@@ -22,8 +22,9 @@ df["OverAll Score"] = df["OverAll Score"].apply(handle_score).fillna(0)
 st.sidebar.title("Filters")
 
 # Filter by Location
-locations = ['All'] + list(df["Location"].unique())
-selected_location = st.sidebar.selectbox("Select a location:", sorted(locations))
+locations = df["Location"].unique()
+locations = ['All'] + sorted([loc for loc in locations if isinstance(loc, str)])
+selected_location = st.sidebar.selectbox("Select a location:", locations)
 
 # Filter by No of student
 min_students, max_students = df["No of student"].min(), df["No of student"].max()
