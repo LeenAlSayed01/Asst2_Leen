@@ -78,11 +78,11 @@ if st.checkbox("Click to see the webpage content"):
 
     # New Figure 4: Histogram of Overall Score
     st.subheader("Distribution of Universities based on Overall Score")
-    fig4 = px.histogram(df, x="OverAll Score", title="Distribution of Universities based on Overall Score", nbins=50)
+    fig4 = px.histogram(filtered_df, x="OverAll Score", title="Distribution of Universities based on Overall Score", nbins=50)
     st.plotly_chart(fig4)
 
     # New Figure 5: Bar chart of average Teaching Score per Location
     st.subheader("Average Teaching Score per Location")
-    teaching_score_per_location = df.groupby('Location')['Teaching Score'].mean().reset_index()
+    teaching_score_per_location = filtered_df.groupby('Location')['Teaching Score'].mean().reset_index()
     fig5 = px.bar(teaching_score_per_location, x='Location', y='Teaching Score', title="Average Teaching Score per Location")
     st.plotly_chart(fig5)
