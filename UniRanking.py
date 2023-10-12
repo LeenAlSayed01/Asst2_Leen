@@ -56,11 +56,6 @@ if st.checkbox("Click to see the webpage content"):
                              hover_name="Name of University", title="Scatter Plot: Overall Score vs. International Student Percentage")
     st.plotly_chart(fig_scatter)  
     
-    # Figure 2
-    fig2 = px.line(filtered_df, x="No of student", y="No of student per staff", color="Name of University",
-                   title="Changes in University Rankings Over Time")
-    st.plotly_chart(fig2)
-
     # Figure 3
     select_university = st.selectbox("Select a university:", ['All'] + filtered_df["Name of University"].unique().tolist())
     if select_university != 'All':
