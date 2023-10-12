@@ -45,15 +45,6 @@ st.title("World University Rankings 2023")
 st.header("Welcome to the interactive dashboard!")
 st.subheader("Explore rankings, scores, and more based on your preferences.")
 
-# Interactive location plot
-st.subheader("Interactive Location Plot")
-fig_location = px.scatter_geo(filtered_df, lat="Latitude", lon="Longitude",
-                              color="OverAll Score", size="No of student",
-                              hover_name="Name of University",
-                              title="Universities Worldwide Based on Location",
-                              projection="natural earth")
-st.plotly_chart(fig_location)
-
 # Display the DataFrame and plots if user input is not empty
 if st.checkbox("Click to see the webpage content"):
     st.subheader("The data")
