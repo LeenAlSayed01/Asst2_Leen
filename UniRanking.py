@@ -22,7 +22,7 @@ df["OverAll Score"] = df["OverAll Score"].apply(handle_score).fillna(0)
 st.sidebar.title("Filters")
 
 # Filter by Location
-selected_location = st.sidebar.selectbox("Select a location:", df["Location"].unique())
+selected_location = st.sidebar.selectbox("Select a location:", ['All'] + sorted(df["Location"].unique().tolist()))
 
 # Filter by No of student
 min_students, max_students = df["No of student"].min(), df["No of student"].max()
@@ -32,25 +32,21 @@ students_range = st.sidebar.slider("Number of Students", min_students, max_stude
 min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
 score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
 
-# Define a placeholder for user input
-# Initialize session state to store user input
-if 'user_input' not in st.session_state:
-    st.session_state.user_input = ""
-
-# Create a text input field
-user_input = st.text_input("Enter your name:")
-
-# Create a button to fetch user input and update the page title
-if st.button("Submit"):
-    st.session_state.user_input = user_input  # Store user input in session state
-    st.title("Hello " + st.session_state.user_input + ", welcome to World University Rankings 2023")
-
 # Filter the DataFrame based on user selections
-filtered_df = df[(df["Location"] == selected_location) &
-                 (df["No of student"] >= students_range[0]) &
-                 (df["No of student"] <= students_range[1]) &
-                 (df["OverAll Score"] >= score_range[0]) &
-                 (df["OverAll Score"] <= score_range[1])]
+filtered_df = df.copy()
+if selected_location != 'All':
+    filtered_df = filtered_df[filtered_df["Location"] == selected_location]
+filtered_df = filtered_df[
+    (filtered_df["No of student"] >= students_range[0]) &
+    (filtered_df["No of student"] <= students_range[1]) &
+    (filtered_df["OverAll Score"] >= score_range[0]) &
+    (filtered_df["OverAll Score"] <= score_range[1])
+]
+
+# Introductory page content
+st.title("World University Rankings 2023")
+st.header("Welcome to the interactive dashboard!")
+st.subheader("Explore rankings, scores, and more based on your preferences.")
 
 # Display the DataFrame and plots if user input is not empty
 if st.checkbox("Click to see the webpage content"):
@@ -69,15 +65,16 @@ if st.checkbox("Click to see the webpage content"):
     st.plotly_chart(fig2)
 
     # Figure 3
-    select_university = st.selectbox("Select a university:", filtered_df["Name of University"].unique())
-    university_df = filtered_df[filtered_df["Name of University"] == select_university]
-    fig3 = px.choropleth(
-        university_df,
-        locations="Location",
-        locationmode="country names",
-        color="Name of University",
-        hover_name="Location",
-        color_continuous_scale=px.colors.sequential.Plasma,
-        projection="natural earth",
-    )
-    st.plotly_chart(fig3)
+    select_university = st.selectbox("Select a university:", ['All'] + filtered_df["Name of University"].unique().tolist())
+    if select_university != 'All':
+        university_df = filtered_df[filtered_df["Name of University"] == select_university]
+        fig3 = px.choropleth(
+            university_df,
+            locations="Location",
+            locationmode="country names",
+            color="Name of University",
+            hover_name="Location",
+            color_continuous_scale=px.colors.sequential.Plasma,
+            projection="natural earth",
+        )
+        st.plotly_chart(fig3)
