@@ -21,11 +21,6 @@ df["OverAll Score"] = df["OverAll Score"].apply(handle_score).fillna(0)
 # Sidebar filters
 st.sidebar.title("Filters")
 
-# Filter by Location
-locations = df["Location"].unique()
-locations = ['All'] + sorted([loc for loc in locations if isinstance(loc, str)])
-selected_location = st.sidebar.selectbox("Select a location:", locations)
-
 # Filter by No of student
 min_students, max_students = df["No of student"].min(), df["No of student"].max()
 students_range = st.sidebar.slider("Number of Students", min_students, max_students, (min_students, max_students))
@@ -35,14 +30,11 @@ min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
 score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
 
 # Filter the DataFrame based on user selections
-filtered_df = df.copy()
-if selected_location != 'All':
-    filtered_df = filtered_df[filtered_df["Location"] == selected_location]
-filtered_df = filtered_df[
-    (filtered_df["No of student"] >= students_range[0]) &
-    (filtered_df["No of student"] <= students_range[1]) &
-    (filtered_df["OverAll Score"] >= score_range[0]) &
-    (filtered_df["OverAll Score"] <= score_range[1])
+filtered_df = df[
+    (df["No of student"] >= students_range[0]) &
+    (df["No of student"] <= students_range[1]) &
+    (df["OverAll Score"] >= score_range[0]) &
+    (df["OverAll Score"] <= score_range[1])
 ]
 
 # Introductory page content
