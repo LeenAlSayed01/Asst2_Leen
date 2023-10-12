@@ -26,16 +26,19 @@ min_students, max_students = df["No of student"].min(), df["No of student"].max(
 students_range = st.sidebar.slider("Number of Students", min_students, max_students, (min_students, max_students))
 
 # Filter by Overall Score
-min_score, max_score = df["OverAll Score"].min(), df["OverAll Score"].max()
-score_range = st.sidebar.slider("Overall Score", min_score, max_score, (min_score, max_score))
+score_columns = ["OverAll Score", "Teaching Score", "Research Score", "Citations Score", "Industry Income Score", "International Outlook Score"]
+score_ranges = {}
+for column in score_columns:
+    min_val, max_val = df[column].min(), df[column].max()
+    score_ranges[column] = st.sidebar.slider(column, min_val, max_val, (min_val, max_val))
 
 # Filter the DataFrame based on user selections
 filtered_df = df[
     (df["No of student"] >= students_range[0]) &
-    (df["No of student"] <= students_range[1]) &
-    (df["OverAll Score"] >= score_range[0]) &
-    (df["OverAll Score"] <= score_range[1])
+    (df["No of student"] <= students_range[1])
 ]
+for column, (min_val, max_val) in score_ranges.items():
+    filtered_df = filtered_df[(df[column] >= min_val) & (df[column] <= max_val)]
 
 # Introductory page content
 st.title("World University Rankings 2023")
