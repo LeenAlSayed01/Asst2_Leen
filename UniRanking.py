@@ -33,7 +33,9 @@ if st.checkbox("Click to see the webpage content"):
     st.subheader("Scatter Plot: Overall Score vs. International Student Percentage")
     fig_scatter = px.scatter(df, x="OverAll Score", y="International Student", 
                             hover_name="Name of University", title="Scatter Plot: Overall Score vs. International Student Percentage")
-    st.plotly_chart(fig_scatter)    
+   
+    st.plotly_chart(fig_scatter)  
+     
 
     #fig 2
     fig2 = px.line(df, x="No of student", y="No of student per staff", color="Name of University",
@@ -41,8 +43,16 @@ if st.checkbox("Click to see the webpage content"):
     st.plotly_chart(fig2)
 
     #fig3
+    
+    
+    
+    
+    
+    select_university = st.selectbox("Select a university:", df["Name of University"].unique())
+    filtered_df = df[df["Name of University"] == select_university]
+   
     fig3 = px.choropleth(
-        df,
+        filtered_df,
         locations="Location",
         locationmode="country names",
         color="Name of University",
@@ -51,3 +61,11 @@ if st.checkbox("Click to see the webpage content"):
         projection="natural earth",
     )
     st.plotly_chart(fig3)
+
+import pandas as pd
+import streamlit as st
+import plotly.express as px
+
+# Load your CSV data
+url = "https://raw.githubusercontent.com/LeenAlSayed01/Asst2_Leen/main/World%20University%20Rankings%202023%201.csv"
+df = pd.read_csv(url)
